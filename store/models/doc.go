@@ -34,6 +34,6 @@
 // the steps are the TaskRuns.
 //
 // i.e. We have a Scheduler Initiator that creates a JobRun every monday
-// based on a JobDefinition. And in turn, those JobRuns have TaskRuns based
-// on the JobDefinition's TaskDefinitions.
+// based on a JobSpec. And in turn, those JobRuns have TaskRuns based
+// on the JobSpec's TaskSpecs.
 package models
