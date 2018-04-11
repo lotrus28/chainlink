@@ -321,7 +321,7 @@ func TestIntegration_WeiWatchers(t *testing.T) {
 		})
 	defer cleanup()
 
-	j, _ := cltest.NewJobWithLogInitiator()
+	j, _ := cltest.NewJobSpecWithLogInitiator()
 	post := cltest.NewTask("httppost", fmt.Sprintf(`{"url":"%v"}`, mockServer.URL))
 	tasks := []models.TaskSpec{post}
 	j.Tasks = tasks

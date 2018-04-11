@@ -17,7 +17,7 @@ func TestJobSpec_Save(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	j1, initr := cltest.NewJobWithSchedule("* * * * 7")
+	j1, initr := cltest.NewJobSpecWithSchedule("* * * * 7")
 	assert.Nil(t, store.SaveJob(&j1))
 
 	store.Save(j1)
@@ -29,7 +29,7 @@ func TestJobSpec_Save(t *testing.T) {
 func TestJobSpec_NewRun(t *testing.T) {
 	t.Parallel()
 
-	job, initr := cltest.NewJobWithSchedule("1 * * * *")
+	job, initr := cltest.NewJobSpecWithSchedule("1 * * * *")
 	job.Tasks = []models.TaskSpec{cltest.NewTask("NoOp", `{"a":1}`)}
 
 	run := job.NewRun(initr)
@@ -65,7 +65,7 @@ func TestJobEnded(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job := cltest.NewJob()
+			job := cltest.NewJobSpec()
 			job.EndAt = test.endAt
 
 			assert.Equal(t, test.want, job.Ended(test.current))
@@ -92,7 +92,7 @@ func TestJobSpec_Started(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job := cltest.NewJob()
+			job := cltest.NewJobSpec()
 			job.StartAt = test.startAt
 
 			assert.Equal(t, test.want, job.Started(test.current))

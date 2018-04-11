@@ -35,7 +35,7 @@ func (jsc *JobSpecsController) Index(c *gin.Context) {
 // Example:
 //  "<application>/specs"
 func (jsc *JobSpecsController) Create(c *gin.Context) {
-	j := models.NewJob()
+	j := models.NewJobSpec()
 
 	if err := c.ShouldBindJSON(&j); err != nil {
 		c.JSON(400, gin.H{

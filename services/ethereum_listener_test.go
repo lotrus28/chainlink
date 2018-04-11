@@ -23,8 +23,8 @@ func TestEthereumListener_Connect_WithJobs(t *testing.T) {
 	defer cleanup()
 	eth := cltest.MockEthOnStore(el.Store)
 
-	j1, _ := cltest.NewJobWithLogInitiator()
-	j2, _ := cltest.NewJobWithLogInitiator()
+	j1, _ := cltest.NewJobSpecWithLogInitiator()
+	j2, _ := cltest.NewJobSpecWithLogInitiator()
 	assert.Nil(t, el.Store.SaveJob(&j1))
 	assert.Nil(t, el.Store.SaveJob(&j2))
 	eth.RegisterSubscription("logs")
@@ -44,8 +44,8 @@ func TestEthereumListener_reconnectLoop_Resubscribing(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 	eth := cltest.MockEthOnStore(store)
-	j1, _ := cltest.NewJobWithLogInitiator()
-	j2, _ := cltest.NewJobWithLogInitiator()
+	j1, _ := cltest.NewJobSpecWithLogInitiator()
+	j2, _ := cltest.NewJobSpecWithLogInitiator()
 	assert.Nil(t, store.SaveJob(&j1))
 	assert.Nil(t, store.SaveJob(&j2))
 
@@ -74,8 +74,8 @@ func TestEthereumListener_AttachedToHeadTracker(t *testing.T) {
 	store := el.Store
 	defer cleanup()
 	eth := cltest.MockEthOnStore(store)
-	j1, _ := cltest.NewJobWithLogInitiator()
-	j2, _ := cltest.NewJobWithLogInitiator()
+	j1, _ := cltest.NewJobSpecWithLogInitiator()
+	j2, _ := cltest.NewJobSpecWithLogInitiator()
 	assert.Nil(t, store.SaveJob(&j1))
 	assert.Nil(t, store.SaveJob(&j2))
 
@@ -121,7 +121,7 @@ func TestEthereumListener_AddJob_Listening(t *testing.T) {
 			logChan := make(chan types.Log, 1)
 			eth.RegisterSubscription("logs", logChan)
 
-			j := cltest.NewJob()
+			j := cltest.NewJobSpec()
 			initr := models.Initiator{Type: test.initType}
 			if !utils.IsEmptyAddress(test.initrAddr) {
 				initr.Address = test.initrAddr
@@ -167,7 +167,7 @@ func TestEthereumListener_OnNewHead_OnlyRunPendingConfirmations(t *testing.T) {
 			defer cleanup()
 			store := el.Store
 
-			job, initr := cltest.NewJobWithWebInitiator()
+			job, initr := cltest.NewJobSpecWithWebInitiator()
 			run := job.NewRun(initr)
 			run.Status = test.status
 

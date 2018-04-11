@@ -39,9 +39,9 @@ func TestClient_GetJobSpecs(t *testing.T) {
 	app, cleanup := cltest.NewApplication()
 	defer cleanup()
 
-	j1 := cltest.NewJob()
+	j1 := cltest.NewJobSpec()
 	app.Store.SaveJob(&j1)
-	j2 := cltest.NewJob()
+	j2 := cltest.NewJobSpec()
 	app.Store.SaveJob(&j2)
 
 	client, r := cltest.NewClientAndRenderer(app.Store.Config)
@@ -55,7 +55,7 @@ func TestClient_GetJobSpecs(t *testing.T) {
 func TestClient_ShowJobSpec(t *testing.T) {
 	app, cleanup := cltest.NewApplication()
 	defer cleanup()
-	job := cltest.NewJob()
+	job := cltest.NewJobSpec()
 	app.Store.SaveJob(&job)
 
 	client, r := cltest.NewClientAndRenderer(app.Store.Config)
@@ -126,11 +126,11 @@ func TestClient_CreateJobRun(t *testing.T) {
 		jobSpec models.JobSpec
 		errored bool
 	}{
-		{"CreateSuccess", `{"value": 100}`, first(cltest.NewJobWithWebInitiator()), false},
-		{"EmptyBody", ``, first(cltest.NewJobWithWebInitiator()), false},
-		{"InvalidBody", `{`, first(cltest.NewJobWithWebInitiator()), true},
-		{"WithoutWebInitiator", ``, first(cltest.NewJobWithLogInitiator()), true},
-		{"NotFound", ``, first(cltest.NewJobWithWebInitiator()), true},
+		{"CreateSuccess", `{"value": 100}`, first(cltest.NewJobSpecWithWebInitiator()), false},
+		{"EmptyBody", ``, first(cltest.NewJobSpecWithWebInitiator()), false},
+		{"InvalidBody", `{`, first(cltest.NewJobSpecWithWebInitiator()), true},
+		{"WithoutWebInitiator", ``, first(cltest.NewJobSpecWithLogInitiator()), true},
+		{"NotFound", ``, first(cltest.NewJobSpecWithWebInitiator()), true},
 	}
 
 	for _, tt := range tests {
@@ -167,7 +167,7 @@ func TestClient_BackupDatabase(t *testing.T) {
 	defer cleanup()
 	client, _ := cltest.NewClientAndRenderer(app.Store.Config)
 
-	job := cltest.NewJob()
+	job := cltest.NewJobSpec()
 	assert.Nil(t, app.Store.SaveJob(&job))
 
 	set := flag.NewFlagSet("backupset", 0)

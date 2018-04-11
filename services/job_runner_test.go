@@ -46,7 +46,7 @@ func TestJobRunner_ExecuteRun(t *testing.T) {
 			bt := cltest.NewBridgeType("auctionBidding", mockServer.URL)
 			assert.Nil(t, store.Save(&bt))
 
-			job, initr := cltest.NewJobWithWebInitiator()
+			job, initr := cltest.NewJobSpecWithWebInitiator()
 			job.Tasks = []models.TaskSpec{
 				cltest.NewTask(bt.Name),
 				cltest.NewTask("noop"),
@@ -97,7 +97,7 @@ func TestExecuteRun_TransitionToPendingConfirmations(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobWithLogInitiator()
+			job, initr := cltest.NewJobSpecWithLogInitiator()
 			job.Tasks = []models.TaskSpec{
 				cltest.NewTaskWithConfirmations("NoOp", test.confirmations),
 			}
@@ -126,7 +126,7 @@ func TestJobRunner_ExecuteRun_TransitionToPending(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobWithWebInitiator()
+	job, initr := cltest.NewJobSpecWithWebInitiator()
 	job.Tasks = []models.TaskSpec{cltest.NewTask("NoOpPend")}
 
 	run := job.NewRun(initr)
@@ -161,7 +161,7 @@ func TestJobRunner_BeginRun(t *testing.T) {
 	for _, tt := range tests {
 		test := tt
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobWithWebInitiator()
+			job, initr := cltest.NewJobSpecWithWebInitiator()
 			job.StartAt = test.startAt
 			job.EndAt = test.endAt
 			assert.Nil(t, store.SaveJob(&job))
@@ -205,7 +205,7 @@ func TestJobRunner_BuildRun(t *testing.T) {
 	for _, tt := range tests {
 		test := tt
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobWithWebInitiator()
+			job, initr := cltest.NewJobSpecWithWebInitiator()
 			job.StartAt = test.startAt
 			job.EndAt = test.endAt
 			assert.Nil(t, store.SaveJob(&job))

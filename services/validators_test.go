@@ -83,7 +83,7 @@ func TestValidateInitiator(t *testing.T) {
 	t.Parallel()
 	startAt := time.Now()
 	endAt := startAt.Add(time.Second)
-	job := cltest.NewJob()
+	job := cltest.NewJobSpec()
 	job.StartAt = cltest.NullableTime(startAt)
 	job.EndAt = cltest.NullableTime(endAt)
 	tests := []struct {

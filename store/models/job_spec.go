@@ -23,9 +23,9 @@ type JobSpec struct {
 	CreatedAt  Time        `json:"createdAt" storm:"index"`
 }
 
-// NewJob initializes a new job by generating a unique ID and setting
+// NewJobSpec initializes a new job by generating a unique ID and setting
 // the CreatedAt field to the time of invokation.
-func NewJob() JobSpec {
+func NewJobSpec() JobSpec {
 	return JobSpec{
 		ID:        utils.NewBytes32ID(),
 		CreatedAt: Time{Time: time.Now()},

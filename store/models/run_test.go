@@ -20,7 +20,7 @@ func TestJobRuns_RetrievingFromDBWithError(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobWithWebInitiator()
+	job, initr := cltest.NewJobSpecWithWebInitiator()
 	jr := job.NewRun(initr)
 	jr.Result = cltest.RunResultWithError(fmt.Errorf("bad idea"))
 	err := store.Save(&jr)
@@ -38,7 +38,7 @@ func TestJobRun_UnfinishedTaskRuns(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	j, i := cltest.NewJobWithWebInitiator()
+	j, i := cltest.NewJobSpecWithWebInitiator()
 	j.Tasks = []models.TaskSpec{
 		{Type: "NoOp"},
 		{Type: "NoOpPend"},
@@ -56,7 +56,7 @@ func TestJobRun_UnfinishedTaskRuns(t *testing.T) {
 func TestTaskRun_Runnable(t *testing.T) {
 	t.Parallel()
 
-	job, initr := cltest.NewJobWithLogInitiator()
+	job, initr := cltest.NewJobSpecWithLogInitiator()
 	tests := []struct {
 		name                 string
 		creationHeight       *hexutil.Big

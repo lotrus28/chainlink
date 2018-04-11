@@ -20,8 +20,8 @@ import (
 	null "gopkg.in/guregu/null.v3"
 )
 
-func NewJob() models.JobSpec {
-	j := models.NewJob()
+func NewJobSpec() models.JobSpec {
+	j := models.NewJobSpec()
 	j.Tasks = []models.TaskSpec{NewTask("NoOp")}
 	return j
 }
@@ -49,20 +49,20 @@ func NewTaskWithConfirmations(taskType string, confs int, params ...string) mode
 	return task
 }
 
-func NewJobWithSchedule(sched string) (models.JobSpec, models.Initiator) {
-	j := NewJob()
+func NewJobSpecWithSchedule(sched string) (models.JobSpec, models.Initiator) {
+	j := NewJobSpec()
 	j.Initiators = []models.Initiator{{Type: models.InitiatorCron, Schedule: models.Cron(sched)}}
 	return j, j.Initiators[0]
 }
 
-func NewJobWithWebInitiator() (models.JobSpec, models.Initiator) {
-	j := NewJob()
+func NewJobSpecWithWebInitiator() (models.JobSpec, models.Initiator) {
+	j := NewJobSpec()
 	j.Initiators = []models.Initiator{{Type: models.InitiatorWeb}}
 	return j, j.Initiators[0]
 }
 
-func NewJobWithLogInitiator() (models.JobSpec, models.Initiator) {
-	j := NewJob()
+func NewJobSpecWithLogInitiator() (models.JobSpec, models.Initiator) {
+	j := NewJobSpec()
 	j.Initiators = []models.Initiator{{
 		Type:    models.InitiatorEthLog,
 		Address: NewAddress(),
@@ -70,8 +70,8 @@ func NewJobWithLogInitiator() (models.JobSpec, models.Initiator) {
 	return j, j.Initiators[0]
 }
 
-func NewJobWithRunAtInitiator(t time.Time) (models.JobSpec, models.Initiator) {
-	j := NewJob()
+func NewJobSpecWithRunAtInitiator(t time.Time) (models.JobSpec, models.Initiator) {
+	j := NewJobSpec()
 	j.Initiators = []models.Initiator{{
 		Type: models.InitiatorRunAt,
 		Time: models.Time{Time: t},

@@ -18,7 +18,7 @@ func TestWhereNotFound(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	j1 := models.NewJob()
+	j1 := models.NewJobSpec()
 	jobs := []models.JobSpec{j1}
 
 	err := store.Where("ID", "bogus", &jobs)
@@ -42,7 +42,7 @@ func TestORMSaveJob(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	j1, initr := cltest.NewJobWithSchedule("* * * * *")
+	j1, initr := cltest.NewJobSpecWithSchedule("* * * * *")
 	store.SaveJob(&j1)
 
 	j2, _ := store.FindJob(j1.ID)
@@ -59,7 +59,7 @@ func TestJobRunsWithStatus(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	j, i := cltest.NewJobWithWebInitiator()
+	j, i := cltest.NewJobSpecWithWebInitiator()
 	assert.Nil(t, store.SaveJob(&j))
 	npr := j.NewRun(i)
 	assert.Nil(t, store.Save(&npr))
@@ -178,7 +178,7 @@ func TestORM_SaveCreationHeight(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobWithWebInitiator()
+	job, initr := cltest.NewJobSpecWithWebInitiator()
 	cases := []struct {
 		name            string
 		creationHeight  *big.Int

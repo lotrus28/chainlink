@@ -13,21 +13,21 @@ import (
 
 func TestRendererJSONRenderJobs(t *testing.T) {
 	r := cmd.RendererJSON{Writer: ioutil.Discard}
-	job := cltest.NewJob()
+	job := cltest.NewJobSpec()
 	jobs := []models.JobSpec{job}
 	assert.Nil(t, r.Render(&jobs))
 }
 
 func TestRendererTableRenderJobs(t *testing.T) {
 	r := cmd.RendererTable{Writer: ioutil.Discard}
-	job := cltest.NewJob()
+	job := cltest.NewJobSpec()
 	jobs := []models.JobSpec{job}
 	assert.Nil(t, r.Render(&jobs))
 }
 
 func TestRendererTableRenderShowJob(t *testing.T) {
 	r := cmd.RendererTable{Writer: ioutil.Discard}
-	job, initr := cltest.NewJobWithWebInitiator()
+	job, initr := cltest.NewJobSpecWithWebInitiator()
 	run := job.NewRun(initr)
 	p := presenters.JobSpec{JobSpec: job, Runs: []models.JobRun{run}}
 	assert.Nil(t, r.Render(&p))
