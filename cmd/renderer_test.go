@@ -13,23 +13,23 @@ import (
 
 func TestRendererJSONRenderJobs(t *testing.T) {
 	r := cmd.RendererJSON{Writer: ioutil.Discard}
-	job := cltest.NewJobSpec()
-	jobs := []models.JobSpec{job}
-	assert.Nil(t, r.Render(&jobs))
+	j := cltest.NewJobSpec()
+	jobSpecs := []models.JobSpec{j}
+	assert.Nil(t, r.Render(&jobSpecs))
 }
 
 func TestRendererTableRenderJobs(t *testing.T) {
 	r := cmd.RendererTable{Writer: ioutil.Discard}
-	job := cltest.NewJobSpec()
-	jobs := []models.JobSpec{job}
-	assert.Nil(t, r.Render(&jobs))
+	j := cltest.NewJobSpec()
+	jobSpecs := []models.JobSpec{j}
+	assert.Nil(t, r.Render(&jobSpecs))
 }
 
 func TestRendererTableRenderShowJob(t *testing.T) {
 	r := cmd.RendererTable{Writer: ioutil.Discard}
-	job, initr := cltest.NewJobSpecWithWebInitiator()
-	run := job.NewRun(initr)
-	p := presenters.JobSpec{JobSpec: job, Runs: []models.JobRun{run}}
+	j, initr := cltest.NewJobSpecWithWebInitiator()
+	run := j.NewRun(initr)
+	p := presenters.JobSpec{JobSpec: j, Runs: []models.JobRun{run}}
 	assert.Nil(t, r.Render(&p))
 }
 

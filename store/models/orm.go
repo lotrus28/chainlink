@@ -57,9 +57,9 @@ func emptySlice(to interface{}) {
 
 // FindJob looks up a Job by its ID.
 func (orm *ORM) FindJob(id string) (JobSpec, error) {
-	var job JobSpec
-	err := orm.One("ID", id, &job)
-	return job, err
+	var j JobSpec
+	err := orm.One("ID", id, &j)
+	return j, err
 }
 
 // FindJobRun looks up a JobRun by its ID.
@@ -76,9 +76,9 @@ func (orm *ORM) InitBucket(model interface{}) error {
 
 // Jobs fetches all jobs.
 func (orm *ORM) Jobs() ([]JobSpec, error) {
-	var jobs []JobSpec
-	err := orm.All(&jobs)
-	return jobs, err
+	var jobSpecs []JobSpec
+	err := orm.All(&jobSpecs)
+	return jobSpecs, err
 }
 
 // JobRunsFor fetches all JobRuns with a given Job ID,
@@ -93,21 +93,21 @@ func (orm *ORM) JobRunsFor(jobID string) ([]JobRun, error) {
 }
 
 // SaveJob saves a job to the database and adds IDs to associated tables.
-func (orm *ORM) SaveJob(job *JobSpec) error {
+func (orm *ORM) SaveJob(j *JobSpec) error {
 	tx, err := orm.Begin(true)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 
-	for i, initr := range job.Initiators {
-		job.Initiators[i].JobID = job.ID
-		initr.JobID = job.ID
+	for i, initr := range j.Initiators {
+		j.Initiators[i].JobID = j.ID
+		initr.JobID = j.ID
 		if err := tx.Save(&initr); err != nil {
 			return err
 		}
 	}
-	if err := tx.Save(job); err != nil {
+	if err := tx.Save(j); err != nil {
 		return err
 	}
 	return tx.Commit()

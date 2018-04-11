@@ -85,14 +85,14 @@ func (app *ChainlinkApplication) GetStore() *store.Store {
 // AddJob adds a job to the store and the scheduler. If there was
 // an error from adding the job to the store, the job will not be
 // added to the scheduler.
-func (app *ChainlinkApplication) AddJob(job models.JobSpec) error {
-	err := app.Store.SaveJob(&job)
+func (app *ChainlinkApplication) AddJob(j models.JobSpec) error {
+	err := app.Store.SaveJob(&j)
 	if err != nil {
 		return err
 	}
 
-	app.Scheduler.AddJob(job)
-	return app.EthereumListener.AddJob(job, app.HeadTracker.LastRecord())
+	app.Scheduler.AddJob(j)
+	return app.EthereumListener.AddJob(j, app.HeadTracker.LastRecord())
 }
 
 // AddAdapter adds an adapter to the store. If another

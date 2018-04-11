@@ -78,7 +78,7 @@ func TestServices_NewRPCLogSubscription_BackfillLogs(t *testing.T) {
 	defer cleanup()
 	eth := cltest.MockEthOnStore(store)
 
-	job, initr := cltest.NewJobSpecWithLogInitiator()
+	j, initr := cltest.NewJobSpecWithLogInitiator()
 	log := cltest.LogFromFixture("../internal/fixtures/eth/subscription_logs.json")
 	eth.Register("eth_getLogs", []types.Log{log})
 	eth.RegisterSubscription("logs")
@@ -86,7 +86,7 @@ func TestServices_NewRPCLogSubscription_BackfillLogs(t *testing.T) {
 	count := 0
 	callback := func(services.RPCLogEvent) { count += 1 }
 	head := cltest.IndexableBlockNumber(0)
-	sub, err := services.NewRPCLogSubscription(initr, job, head, store, callback)
+	sub, err := services.NewRPCLogSubscription(initr, j, head, store, callback)
 	assert.Nil(t, err)
 	defer sub.Unsubscribe()
 
@@ -101,12 +101,12 @@ func TestServices_NewRPCLogSubscription_BackfillLogs_WithNoHead(t *testing.T) {
 	defer cleanup()
 	eth := cltest.MockEthOnStore(store)
 
-	job, initr := cltest.NewJobSpecWithLogInitiator()
+	j, initr := cltest.NewJobSpecWithLogInitiator()
 	eth.RegisterSubscription("logs")
 
 	count := 0
 	callback := func(services.RPCLogEvent) { count += 1 }
-	sub, err := services.NewRPCLogSubscription(initr, job, nil, store, callback)
+	sub, err := services.NewRPCLogSubscription(initr, j, nil, store, callback)
 	assert.Nil(t, err)
 	defer sub.Unsubscribe()
 
@@ -121,7 +121,7 @@ func TestServices_NewRPCLogSubscription_PreventsDoubleDispatch(t *testing.T) {
 	defer cleanup()
 	eth := cltest.MockEthOnStore(store)
 
-	job, initr := cltest.NewJobSpecWithLogInitiator()
+	j, initr := cltest.NewJobSpecWithLogInitiator()
 	log := cltest.LogFromFixture("../internal/fixtures/eth/subscription_logs.json")
 	eth.Register("eth_getLogs", []types.Log{log}) // backfill
 	logsChan := make(chan types.Log, 1)
@@ -131,7 +131,7 @@ func TestServices_NewRPCLogSubscription_PreventsDoubleDispatch(t *testing.T) {
 	count := 0
 	callback := func(services.RPCLogEvent) { count += 1 }
 	head := cltest.IndexableBlockNumber(0)
-	sub, err := services.NewRPCLogSubscription(initr, job, head, store, callback)
+	sub, err := services.NewRPCLogSubscription(initr, j, head, store, callback)
 	assert.Nil(t, err)
 	defer sub.Unsubscribe()
 

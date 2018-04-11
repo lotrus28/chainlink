@@ -47,25 +47,25 @@ func TestClient_GetJobSpecs(t *testing.T) {
 	client, r := cltest.NewClientAndRenderer(app.Store.Config)
 
 	assert.Nil(t, client.GetJobSpecs(nil))
-	jobs := *r.Renders[0].(*[]models.JobSpec)
-	assert.Equal(t, 2, len(jobs))
-	assert.Equal(t, j1.ID, jobs[0].ID)
+	jobSpecs := *r.Renders[0].(*[]models.JobSpec)
+	assert.Equal(t, 2, len(jobSpecs))
+	assert.Equal(t, j1.ID, jobSpecs[0].ID)
 }
 
 func TestClient_ShowJobSpec(t *testing.T) {
 	app, cleanup := cltest.NewApplication()
 	defer cleanup()
-	job := cltest.NewJobSpec()
-	app.Store.SaveJob(&job)
+	j := cltest.NewJobSpec()
+	app.Store.SaveJob(&j)
 
 	client, r := cltest.NewClientAndRenderer(app.Store.Config)
 
 	set := flag.NewFlagSet("test", 0)
-	set.Parse([]string{job.ID})
+	set.Parse([]string{j.ID})
 	c := cli.NewContext(nil, set, nil)
 	assert.Nil(t, client.ShowJobSpec(c))
 	assert.Equal(t, 1, len(r.Renders))
-	assert.Equal(t, job.ID, r.Renders[0].(*presenters.JobSpec).ID)
+	assert.Equal(t, j.ID, r.Renders[0].(*presenters.JobSpec).ID)
 }
 
 func TestClient_ShowJobSpec_NotFound(t *testing.T) {
@@ -167,8 +167,8 @@ func TestClient_BackupDatabase(t *testing.T) {
 	defer cleanup()
 	client, _ := cltest.NewClientAndRenderer(app.Store.Config)
 
-	job := cltest.NewJobSpec()
-	assert.Nil(t, app.Store.SaveJob(&job))
+	j := cltest.NewJobSpec()
+	assert.Nil(t, app.Store.SaveJob(&j))
 
 	set := flag.NewFlagSet("backupset", 0)
 	path := path.Join(app.Store.Config.RootDir, "backup.bolt")
@@ -179,10 +179,10 @@ func TestClient_BackupDatabase(t *testing.T) {
 	assert.Nil(t, err)
 
 	restored := models.NewORM(path)
-	restoredJob, err := restored.FindJob(job.ID)
+	restoredJob, err := restored.FindJob(j.ID)
 	assert.Nil(t, err)
 
-	reloaded, err := app.Store.FindJob(job.ID)
+	reloaded, err := app.Store.FindJob(j.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, reloaded, restoredJob)
 }

@@ -46,14 +46,14 @@ func TestJobRunner_ExecuteRun(t *testing.T) {
 			bt := cltest.NewBridgeType("auctionBidding", mockServer.URL)
 			assert.Nil(t, store.Save(&bt))
 
-			job, initr := cltest.NewJobSpecWithWebInitiator()
-			job.Tasks = []models.TaskSpec{
+			j, initr := cltest.NewJobSpecWithWebInitiator()
+			j.Tasks = []models.TaskSpec{
 				cltest.NewTask(bt.Name),
 				cltest.NewTask("noop"),
 			}
-			assert.Nil(t, store.Save(&job))
+			assert.Nil(t, store.Save(&j))
 
-			run = job.NewRun(initr)
+			run = j.NewRun(initr)
 			input := models.RunResult{Data: cltest.JSONFromString(test.input)}
 			run, err := services.ExecuteRun(run, store, input)
 			assert.Nil(t, err)
@@ -97,12 +97,12 @@ func TestExecuteRun_TransitionToPendingConfirmations(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobSpecWithLogInitiator()
-			job.Tasks = []models.TaskSpec{
+			j, initr := cltest.NewJobSpecWithLogInitiator()
+			j.Tasks = []models.TaskSpec{
 				cltest.NewTaskWithConfirmations("NoOp", test.confirmations),
 			}
 
-			run := job.NewRun(initr)
+			run := j.NewRun(initr)
 			run, err := store.SaveCreationHeight(run, cltest.IndexableBlockNumber(creationHeight))
 			assert.Nil(t, err)
 
@@ -126,10 +126,10 @@ func TestJobRunner_ExecuteRun_TransitionToPending(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobSpecWithWebInitiator()
-	job.Tasks = []models.TaskSpec{cltest.NewTask("NoOpPend")}
+	j, initr := cltest.NewJobSpecWithWebInitiator()
+	j.Tasks = []models.TaskSpec{cltest.NewTask("NoOpPend")}
 
-	run := job.NewRun(initr)
+	run := j.NewRun(initr)
 	run, err := services.ExecuteRun(run, store, models.RunResult{})
 	assert.Nil(t, err)
 
@@ -161,19 +161,19 @@ func TestJobRunner_BeginRun(t *testing.T) {
 	for _, tt := range tests {
 		test := tt
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobSpecWithWebInitiator()
-			job.StartAt = test.startAt
-			job.EndAt = test.endAt
-			assert.Nil(t, store.SaveJob(&job))
+			j, initr := cltest.NewJobSpecWithWebInitiator()
+			j.StartAt = test.startAt
+			j.EndAt = test.endAt
+			assert.Nil(t, store.SaveJob(&j))
 
-			_, err := services.BeginRun(job, initr, models.RunResult{}, store)
+			_, err := services.BeginRun(j, initr, models.RunResult{}, store)
 
 			if test.errored {
 				assert.NotNil(t, err)
 			} else {
 				assert.Nil(t, err)
 			}
-			jrs, err := store.JobRunsFor(job.ID)
+			jrs, err := store.JobRunsFor(j.ID)
 			assert.Nil(t, err)
 			assert.Equal(t, test.runCount, len(jrs))
 		})
@@ -205,12 +205,12 @@ func TestJobRunner_BuildRun(t *testing.T) {
 	for _, tt := range tests {
 		test := tt
 		t.Run(test.name, func(t *testing.T) {
-			job, initr := cltest.NewJobSpecWithWebInitiator()
-			job.StartAt = test.startAt
-			job.EndAt = test.endAt
-			assert.Nil(t, store.SaveJob(&job))
+			j, initr := cltest.NewJobSpecWithWebInitiator()
+			j.StartAt = test.startAt
+			j.EndAt = test.endAt
+			assert.Nil(t, store.SaveJob(&j))
 
-			_, err := services.BuildRun(job, initr, store)
+			_, err := services.BuildRun(j, initr, store)
 
 			if test.errored {
 				assert.NotNil(t, err)

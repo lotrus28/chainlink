@@ -83,9 +83,9 @@ func TestValidateInitiator(t *testing.T) {
 	t.Parallel()
 	startAt := time.Now()
 	endAt := startAt.Add(time.Second)
-	job := cltest.NewJobSpec()
-	job.StartAt = cltest.NullableTime(startAt)
-	job.EndAt = cltest.NullableTime(endAt)
+	j := cltest.NewJobSpec()
+	j.StartAt = cltest.NullableTime(startAt)
+	j.EndAt = cltest.NullableTime(endAt)
 	tests := []struct {
 		name      string
 		input     string
@@ -107,7 +107,7 @@ func TestValidateInitiator(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			var initr models.Initiator
 			assert.Nil(t, json.Unmarshal([]byte(test.input), &initr))
-			result := services.ValidateInitiator(initr, job)
+			result := services.ValidateInitiator(initr, j)
 			if test.wantError {
 				assert.NotNil(t, result)
 			} else {

@@ -84,33 +84,33 @@ func (j JobSpec) MarshalJSON() ([]byte, error) {
 
 // FriendlyCreatedAt returns a human-readable string of the Job's
 // CreatedAt field.
-func (job JobSpec) FriendlyCreatedAt() string {
-	return job.CreatedAt.HumanString()
+func (j JobSpec) FriendlyCreatedAt() string {
+	return j.CreatedAt.HumanString()
 }
 
 // FriendlyStartAt returns a human-readable string of the Job's
 // StartAt field.
-func (job JobSpec) FriendlyStartAt() string {
-	if job.StartAt.Valid {
-		return utils.ISO8601UTC(job.StartAt.Time)
+func (j JobSpec) FriendlyStartAt() string {
+	if j.StartAt.Valid {
+		return utils.ISO8601UTC(j.StartAt.Time)
 	}
 	return ""
 }
 
 // FriendlyEndAt returns a human-readable string of the Job's
 // EndAt field.
-func (job JobSpec) FriendlyEndAt() string {
-	if job.EndAt.Valid {
-		return utils.ISO8601UTC(job.EndAt.Time)
+func (j JobSpec) FriendlyEndAt() string {
+	if j.EndAt.Valid {
+		return utils.ISO8601UTC(j.EndAt.Time)
 	}
 	return ""
 }
 
 // FriendlyInitiators returns the list of Initiator types as
 // a comma separated string.
-func (job JobSpec) FriendlyInitiators() string {
+func (j JobSpec) FriendlyInitiators() string {
 	var initrs []string
-	for _, i := range job.Initiators {
+	for _, i := range j.Initiators {
 		initrs = append(initrs, i.Type)
 	}
 	return strings.Join(initrs, "\n")
@@ -118,9 +118,9 @@ func (job JobSpec) FriendlyInitiators() string {
 
 // FriendlyTasks returns the list of Task types as a comma
 // separated string.
-func (job JobSpec) FriendlyTasks() string {
+func (j JobSpec) FriendlyTasks() string {
 	var tasks []string
-	for _, t := range job.Tasks {
+	for _, t := range j.Tasks {
 		tasks = append(tasks, t.Type)
 	}
 

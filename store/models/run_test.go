@@ -20,8 +20,8 @@ func TestJobRuns_RetrievingFromDBWithError(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobSpecWithWebInitiator()
-	jr := job.NewRun(initr)
+	j, initr := cltest.NewJobSpecWithWebInitiator()
+	jr := j.NewRun(initr)
 	jr.Result = cltest.RunResultWithError(fmt.Errorf("bad idea"))
 	err := store.Save(&jr)
 	assert.Nil(t, err)
@@ -56,7 +56,7 @@ func TestJobRun_UnfinishedTaskRuns(t *testing.T) {
 func TestTaskRun_Runnable(t *testing.T) {
 	t.Parallel()
 
-	job, initr := cltest.NewJobSpecWithLogInitiator()
+	j, initr := cltest.NewJobSpecWithLogInitiator()
 	tests := []struct {
 		name                 string
 		creationHeight       *hexutil.Big
@@ -73,7 +73,7 @@ func TestTaskRun_Runnable(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			jr := job.NewRun(initr)
+			jr := j.NewRun(initr)
 			if test.creationHeight != nil {
 				jr.CreationHeight = test.creationHeight
 			}

@@ -29,12 +29,12 @@ func TestJobSpec_Save(t *testing.T) {
 func TestJobSpec_NewRun(t *testing.T) {
 	t.Parallel()
 
-	job, initr := cltest.NewJobSpecWithSchedule("1 * * * *")
-	job.Tasks = []models.TaskSpec{cltest.NewTask("NoOp", `{"a":1}`)}
+	j, initr := cltest.NewJobSpecWithSchedule("1 * * * *")
+	j.Tasks = []models.TaskSpec{cltest.NewTask("NoOp", `{"a":1}`)}
 
-	run := job.NewRun(initr)
+	run := j.NewRun(initr)
 
-	assert.Equal(t, job.ID, run.JobID)
+	assert.Equal(t, j.ID, run.JobID)
 	assert.Equal(t, 1, len(run.TaskRuns))
 
 	taskRun := run.TaskRuns[0]
@@ -65,10 +65,10 @@ func TestJobEnded(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job := cltest.NewJobSpec()
-			job.EndAt = test.endAt
+			j := cltest.NewJobSpec()
+			j.EndAt = test.endAt
 
-			assert.Equal(t, test.want, job.Ended(test.current))
+			assert.Equal(t, test.want, j.Ended(test.current))
 		})
 	}
 }
@@ -92,10 +92,10 @@ func TestJobSpec_Started(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			job := cltest.NewJobSpec()
-			job.StartAt = test.startAt
+			j := cltest.NewJobSpec()
+			j.StartAt = test.startAt
 
-			assert.Equal(t, test.want, job.Started(test.current))
+			assert.Equal(t, test.want, j.Started(test.current))
 		})
 	}
 }

@@ -19,11 +19,11 @@ func TestWhereNotFound(t *testing.T) {
 	defer cleanup()
 
 	j1 := models.NewJobSpec()
-	jobs := []models.JobSpec{j1}
+	jobSpecs := []models.JobSpec{j1}
 
-	err := store.Where("ID", "bogus", &jobs)
+	err := store.Where("ID", "bogus", &jobSpecs)
 	assert.Nil(t, err)
-	assert.Equal(t, 0, len(jobs), "Queried array should be empty")
+	assert.Equal(t, 0, len(jobSpecs), "Queried array should be empty")
 }
 
 func TestAllNotFound(t *testing.T) {
@@ -31,10 +31,10 @@ func TestAllNotFound(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	var jobs []models.JobSpec
-	err := store.All(&jobs)
+	var jobSpecs []models.JobSpec
+	err := store.All(&jobSpecs)
 	assert.Nil(t, err)
-	assert.Equal(t, 0, len(jobs), "Queried array should be empty")
+	assert.Equal(t, 0, len(jobSpecs), "Queried array should be empty")
 }
 
 func TestORMSaveJob(t *testing.T) {
@@ -178,7 +178,7 @@ func TestORM_SaveCreationHeight(t *testing.T) {
 	store, cleanup := cltest.NewStore()
 	defer cleanup()
 
-	job, initr := cltest.NewJobSpecWithWebInitiator()
+	j, initr := cltest.NewJobSpecWithWebInitiator()
 	cases := []struct {
 		name            string
 		creationHeight  *big.Int
@@ -191,7 +191,7 @@ func TestORM_SaveCreationHeight(t *testing.T) {
 	}
 	for _, test := range cases {
 		t.Run(test.name, func(t *testing.T) {
-			jr := job.NewRun(initr)
+			jr := j.NewRun(initr)
 			if test.creationHeight != nil {
 				ch := hexutil.Big(*test.creationHeight)
 				jr.CreationHeight = &ch

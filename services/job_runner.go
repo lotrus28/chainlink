@@ -12,24 +12,24 @@ import (
 
 // BeginRun creates a new run if the job is valid and starts the job.
 func BeginRun(
-	job models.JobSpec,
+	j models.JobSpec,
 	initr models.Initiator,
 	input models.RunResult,
 	store *store.Store,
 ) (models.JobRun, error) {
-	return BeginRunAtBlock(job, initr, input, store, nil)
+	return BeginRunAtBlock(j, initr, input, store, nil)
 }
 
 // BeginRunAtBlock builds and executes a new run if the job is valid with the block number
 // to determine if tasks should be resumed.
 func BeginRunAtBlock(
-	job models.JobSpec,
+	j models.JobSpec,
 	initr models.Initiator,
 	input models.RunResult,
 	store *store.Store,
 	bn *models.IndexableBlockNumber,
 ) (models.JobRun, error) {
-	run, err := BuildRun(job, initr, store)
+	run, err := BuildRun(j, initr, store)
 	if err != nil {
 		return models.JobRun{}, err
 	}
@@ -38,19 +38,19 @@ func BeginRunAtBlock(
 
 // BuildRun checks to ensure the given job has not started or ended before
 // creating a new run for the job.
-func BuildRun(job models.JobSpec, i models.Initiator, store *store.Store) (models.JobRun, error) {
+func BuildRun(j models.JobSpec, i models.Initiator, store *store.Store) (models.JobRun, error) {
 	now := store.Clock.Now()
-	if !job.Started(now) {
+	if !j.Started(now) {
 		return models.JobRun{}, JobRunnerError{
-			msg: fmt.Sprintf("Job runner: Job %v unstarted: %v before job's start time %v", job.ID, now, job.EndAt),
+			msg: fmt.Sprintf("Job runner: Job %v unstarted: %v before job's start time %v", j.ID, now, j.EndAt),
 		}
 	}
-	if job.Ended(now) {
+	if j.Ended(now) {
 		return models.JobRun{}, JobRunnerError{
-			msg: fmt.Sprintf("Job runner: Job %v ended: %v past job's end time %v", job.ID, now, job.EndAt),
+			msg: fmt.Sprintf("Job runner: Job %v ended: %v past job's end time %v", j.ID, now, j.EndAt),
 		}
 	}
-	return job.NewRun(i), nil
+	return j.NewRun(i), nil
 }
 
 // ExecuteRun calls ExecuteRunAtBlock without an IndexableBlockNumber

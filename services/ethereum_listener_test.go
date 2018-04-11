@@ -167,11 +167,11 @@ func TestEthereumListener_OnNewHead_OnlyRunPendingConfirmations(t *testing.T) {
 			defer cleanup()
 			store := el.Store
 
-			job, initr := cltest.NewJobSpecWithWebInitiator()
-			run := job.NewRun(initr)
+			j, initr := cltest.NewJobSpecWithWebInitiator()
+			run := j.NewRun(initr)
 			run.Status = test.status
 
-			assert.Nil(t, store.SaveJob(&job))
+			assert.Nil(t, store.SaveJob(&j))
 			assert.Nil(t, store.Save(&run))
 			el.OnNewHead(cltest.NewBlockHeader(10))
 

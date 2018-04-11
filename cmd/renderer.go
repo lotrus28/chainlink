@@ -52,11 +52,11 @@ func (rt RendererTable) Render(v interface{}) error {
 	return nil
 }
 
-func (rt RendererTable) renderJobs(jobs []models.JobSpec) error {
+func (rt RendererTable) renderJobs(jobSpecs []models.JobSpec) error {
 	table := tablewriter.NewWriter(rt)
 	table.SetHeader([]string{"ID", "Created At", "Initiators", "Tasks"})
-	for _, v := range jobs {
-		table.Append(jobRowToStrings(v))
+	for _, v := range jobSpecs {
+		table.Append(jobSpecRowToStrings(v))
 	}
 
 	render("Jobs", table)
@@ -73,8 +73,8 @@ func render(name string, table *tablewriter.Table) {
 	table.Render()
 }
 
-func jobRowToStrings(job models.JobSpec) []string {
-	p := presenters.JobSpec{JobSpec: job, Runs: nil}
+func jobSpecRowToStrings(j models.JobSpec) []string {
+	p := presenters.JobSpec{JobSpec: j, Runs: nil}
 	return []string{
 		p.ID,
 		p.FriendlyCreatedAt(),
@@ -83,20 +83,20 @@ func jobRowToStrings(job models.JobSpec) []string {
 	}
 }
 
-func (rt RendererTable) renderJob(job presenters.JobSpec) error {
-	if err := rt.renderJobSingles(job); err != nil {
+func (rt RendererTable) renderJob(j presenters.JobSpec) error {
+	if err := rt.renderJobSingles(j); err != nil {
 		return err
 	}
 
-	if err := rt.renderJobInitiators(job); err != nil {
+	if err := rt.renderJobInitiators(j); err != nil {
 		return err
 	}
 
-	if err := rt.renderJobTasks(job); err != nil {
+	if err := rt.renderJobTasks(j); err != nil {
 		return err
 	}
 
-	if err := rt.renderJobRuns(job); err != nil {
+	if err := rt.renderJobRuns(j); err != nil {
 		return err
 	}
 

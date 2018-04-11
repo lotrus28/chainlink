@@ -24,12 +24,12 @@ type EthereumListener struct {
 
 // AddJob subscribes to ethereum log events for each "runlog" and "ethlog"
 // initiator in the passed job spec.
-func (el *EthereumListener) AddJob(job models.JobSpec, bn *models.IndexableBlockNumber) error {
-	if !job.IsLogInitiated() {
+func (el *EthereumListener) AddJob(j models.JobSpec, bn *models.IndexableBlockNumber) error {
+	if !j.IsLogInitiated() {
 		return nil
 	}
 
-	sub, err := StartJobSubscription(job, bn, el.Store)
+	sub, err := StartJobSubscription(j, bn, el.Store)
 	if err != nil {
 		return err
 	}
@@ -39,11 +39,11 @@ func (el *EthereumListener) AddJob(job models.JobSpec, bn *models.IndexableBlock
 
 // Jobs returns the jobs being listened to.
 func (el *EthereumListener) Jobs() []models.JobSpec {
-	var jobs []models.JobSpec
+	var jobSpecs []models.JobSpec
 	for _, js := range el.jobSubscriptions {
-		jobs = append(jobs, js.Job)
+		jobSpecs = append(jobSpecs, js.Job)
 	}
-	return jobs
+	return jobSpecs
 }
 
 func (el *EthereumListener) addSubscription(sub JobSubscription) {
@@ -54,11 +54,11 @@ func (el *EthereumListener) addSubscription(sub JobSubscription) {
 
 // Connect connects the jobs to the ethereum node by creating corresponding subscriptions.
 func (el *EthereumListener) Connect(bn *models.IndexableBlockNumber) error {
-	jobs, err := el.Store.Jobs()
+	jobSpecs, err := el.Store.Jobs()
 	if err != nil {
 		return err
 	}
-	for _, j := range jobs {
+	for _, j := range jobSpecs {
 		err = multierr.Append(err, el.AddJob(j, bn))
 	}
 	return err

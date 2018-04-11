@@ -38,20 +38,20 @@ type JobSubscription struct {
 }
 
 // StartJobSubscription is the constructor of JobSubscription that to starts
-// listening to and keeps track of event logs corresponding to a job.
-func StartJobSubscription(job models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (JobSubscription, error) {
+// listening to and keeps track of event logs corresponding to a JobSpec.
+func StartJobSubscription(j models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (JobSubscription, error) {
 	var merr error
 	var initSubs []Unsubscriber
-	for _, initr := range job.InitiatorsFor(models.InitiatorEthLog) {
-		sub, err := StartEthLogSubscription(initr, job, head, store)
+	for _, initr := range j.InitiatorsFor(models.InitiatorEthLog) {
+		sub, err := StartEthLogSubscription(initr, j, head, store)
 		merr = multierr.Append(merr, err)
 		if err == nil {
 			initSubs = append(initSubs, sub)
 		}
 	}
 
-	for _, initr := range job.InitiatorsFor(models.InitiatorRunLog) {
-		sub, err := StartRunLogSubscription(initr, job, head, store)
+	for _, initr := range j.InitiatorsFor(models.InitiatorRunLog) {
+		sub, err := StartRunLogSubscription(initr, j, head, store)
 		merr = multierr.Append(merr, err)
 		if err == nil {
 			initSubs = append(initSubs, sub)
@@ -62,7 +62,7 @@ func StartJobSubscription(job models.JobSpec, head *models.IndexableBlockNumber,
 		return JobSubscription{}, multierr.Append(merr, errors.New("Job must have a valid log initiator"))
 	}
 
-	js := JobSubscription{Job: job, unsubscribers: initSubs}
+	js := JobSubscription{Job: j, unsubscribers: initSubs}
 	return js, merr
 }
 
@@ -95,7 +95,7 @@ type RPCLogSubscription struct {
 // logs to the callback func parameter.
 func NewRPCLogSubscription(
 	initr models.Initiator,
-	job models.JobSpec,
+	j models.JobSpec,
 	head *models.IndexableBlockNumber,
 	store *store.Store,
 	callback func(RPCLogEvent),
@@ -104,7 +104,7 @@ func NewRPCLogSubscription(
 		return RPCLogSubscription{}, errors.New("Can only create an RPC log subscription for log initiators")
 	}
 
-	sub := RPCLogSubscription{Job: job, Initiator: initr, store: store, ReceiveLog: callback}
+	sub := RPCLogSubscription{Job: j, Initiator: initr, store: store, ReceiveLog: callback}
 	sub.errors = make(chan error)
 	sub.logs = make(chan types.Log)
 
@@ -175,13 +175,13 @@ func (sub RPCLogSubscription) dispatchLog(log types.Log) {
 }
 
 // StartRunLogSubscription starts an RPCLogSubscription tailored for use with RunLogs.
-func StartRunLogSubscription(initr models.Initiator, job models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (Unsubscriber, error) {
-	return NewRPCLogSubscription(initr, job, head, store, receiveRunLog)
+func StartRunLogSubscription(initr models.Initiator, j models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (Unsubscriber, error) {
+	return NewRPCLogSubscription(initr, j, head, store, receiveRunLog)
 }
 
 // StartEthLogSubscription starts an RPCLogSubscription tailored for use with EthLogs.
-func StartEthLogSubscription(initr models.Initiator, job models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (Unsubscriber, error) {
-	return NewRPCLogSubscription(initr, job, head, store, receiveEthLog)
+func StartEthLogSubscription(initr models.Initiator, j models.JobSpec, head *models.IndexableBlockNumber, store *store.Store) (Unsubscriber, error) {
+	return NewRPCLogSubscription(initr, j, head, store, receiveEthLog)
 }
 
 func loggerLogListening(initr models.Initiator, number *models.IndexableBlockNumber) {
